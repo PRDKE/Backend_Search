@@ -24,7 +24,7 @@ public class UserPostService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public Map<String, Post> findPostWithMatch(String search) throws MatchNotFoundException, BadRequestException {
+    public Map<String, Post> findPostWithMatch(String username, String search) throws MatchNotFoundException, BadRequestException {
         if (search.isEmpty()) {
             throw new BadRequestException("Bad request!");
         }
@@ -34,7 +34,7 @@ public class UserPostService {
 
         for (UserPost userPost : userPostList) {
             for (Post post : userPost.getPostList()) {
-                if (post.getMessage().toLowerCase().contains(searchInLowerCase)) {
+                if (post.getMessage().toLowerCase().contains(searchInLowerCase) && !userPost.getUsername().equals(username)) {
                     response.put(userPost.getUsername(), post);
                 }
             }

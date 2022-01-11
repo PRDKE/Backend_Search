@@ -19,7 +19,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> findUserWithMatch(String search) throws MatchNotFoundException, BadRequestException {
+    public List<User> findUserWithMatch(String username, String search) throws MatchNotFoundException, BadRequestException {
         if (search.isEmpty()) {
             throw new BadRequestException("Bad request!");
         }
@@ -27,7 +27,7 @@ public class UserService {
         List<User> response = new ArrayList<>();
         String searchInLowerCase = search.toLowerCase();
         for (User user : userList) {
-            if (user.getUsername().toLowerCase().contains(searchInLowerCase)) {
+            if ((user.getUsername().toLowerCase().contains(searchInLowerCase) || user.getUsername().toLowerCase().equals(searchInLowerCase)) && !user.getUsername().equals(username)) {
                 response.add(user);
             }
         }
