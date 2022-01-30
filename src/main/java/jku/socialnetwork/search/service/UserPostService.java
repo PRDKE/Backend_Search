@@ -24,21 +24,29 @@ public class UserPostService {
         this.mongoTemplate = mongoTemplate;
     }
 
+    // searches for matching posts with the 'search'-value
+    // the 'username' is the current user that is using the search-service
+    // all post who are created from the user with the given username do not get returned
     public Map<String, Post> findPostWithMatch(String username, String search) throws MatchNotFoundException, BadRequestException {
+        // check if search value is empty
         if (search.isEmpty()) {
             throw new BadRequestException("Bad request!");
         }
         List<UserPost> userPostList = userPostRepository.findAll();
         Map<String, Post> response = new HashMap<>();
+        // convert search value to lower case
         String searchInLowerCase = search.toLowerCase();
 
+        // search for matching posts
         for (UserPost userPost : userPostList) {
             for (Post post : userPost.getPostList()) {
+                // check if the post matches the search value and ignores the post if it is a post from the current user who is using this service
                 if (post.getMessage().toLowerCase().contains(searchInLowerCase) && !userPost.getUsername().equals(username)) {
                     response.put(userPost.getUsername(), post);
                 }
             }
         }
+        // throws exception if no matching posts get found
         if (response.isEmpty()) {
             throw new MatchNotFoundException("No match found!");
         }

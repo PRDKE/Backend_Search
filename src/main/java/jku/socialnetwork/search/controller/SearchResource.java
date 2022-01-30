@@ -32,25 +32,31 @@ public class SearchResource {
         this.userService = userService;
     }
 
+    // search for matching posts
     @GetMapping("/searchUserPostForMatch/{search}")
     public ResponseEntity<Map<String, Post>> findPostWithMatch(HttpServletRequest request, @PathVariable String search) throws MatchNotFoundException, BadRequestException {
+        // spring check barear token in header
         String jwtToken = request.getHeader("Authorization");
         if(jwtToken == null || (!JwtUtils.isJwtTokenValid(jwtToken))) {
             System.err.println("No authorization-header set or invalid jwtToken provided.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        // get username from JWT
         String username = JwtUtils.getUsernameFromJwtToken(jwtToken);
         Map<String, Post> searchResult = this.userPostService.findPostWithMatch(username, search);
         return new ResponseEntity<>(searchResult, HttpStatus.OK);
     }
 
+    // search for matching usernames
     @GetMapping("/searchUserForMatch/{search}")
     public ResponseEntity<List<User>> findUserWithMatch(HttpServletRequest request, @PathVariable String search) throws MatchNotFoundException, BadRequestException {
+        // spring check barear token in header
         String jwtToken = request.getHeader("Authorization");
         if(jwtToken == null || (!JwtUtils.isJwtTokenValid(jwtToken))) {
             System.err.println("No authorization-header set or invalid jwtToken provided.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        // get username from JWT
         String username = JwtUtils.getUsernameFromJwtToken(jwtToken);
         List<User> userList = userService.findUserWithMatch(username, search);
         return new ResponseEntity<>(userList, HttpStatus.OK);

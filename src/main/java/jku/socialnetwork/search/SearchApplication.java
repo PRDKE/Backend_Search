@@ -16,6 +16,7 @@ public class SearchApplication {
 		SpringApplication.run(SearchApplication.class, args);
 	}
 
+	// this cors filter allows the port 4200 (frontend) to call all method of this application
 	@Bean
 	public CorsFilter corsFilter() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
